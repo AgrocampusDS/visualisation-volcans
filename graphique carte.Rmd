@@ -11,13 +11,57 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(readr)
-volcano <- read_csv("volcano.csv")
+volcano <- read_delim("volcano.csv",
+                      delim = ";", 
+                      escape_double = FALSE,
+                      trim_ws = TRUE)
+#names(volcano)
+volcano$Year <- as.factor(volcano$Year)
+volcano$Name <- as.factor(volcano$Name)
+volcano$Location <- as.factor(volcano$Location)
+volcano$Country <- as.factor(volcano$Country)
+
+#summary(volcano)
+
+volcano <- cbind(volcano, 'LIFE_MILLIONS_DOLLAR' = 3.38*(volcano$DEATHS))
+volcano <- cbind(volcano, 'TOTAL_COST_MD' = volcano$DAMAGE_MILLIONS_DOLLARS + volcano$LIFE_MILLIONS_DOLLAR)
+volcano <- cbind(volcano, 'sTOTAL_COST' = (volcano$LIFE_MILLIONS_DOLLAR)/1000)
+```
+
+
+```{r}
+world <- ne_countries(scale = "medium", returnclass = "sf")
+world %>% 
+  ggplot() + 
+  geom_sf()
 ```
 
 
 
+```{r}
+library(rnaturalearth)
+library(ggplot2)
+library(tidyverse)
 
+world <- ne_countries(scale = "medium", returnclass = "sf")
+world %>% 
+  ggplot() + 
+  geom_sf() +
+  geom_polygon(data = volcano,
+               aes(x = Longitude,
+                   y = Latitude,
+                   group = Location),
+               fill = "grey",
+               alpha = 0.3) +
+  geom_point(data = volcano,
+             aes(x = Longitude,
+                 y = Latitude,
+                 size = (TOTAL_COST_MD*1000),
+                 color = Type,
+                 text = Name),
+             alpha = 0.8)
 
+```
 
 
 
