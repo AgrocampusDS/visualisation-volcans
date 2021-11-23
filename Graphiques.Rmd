@@ -11,4 +11,51 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Importation des données
 
+```{r}
+data <- read.csv("volcano.csv",sep = ";")
+summary(data)
+dataquanti <- data[,c(1,7:9,13,15:19)]
+```
+
+```{r}
+library(ggplot2)
+value <- as.data.frame(table(data$Name))
+# Stacked
+ggplot(data, aes(x=Year)) + 
+    geom_bar()
+
+ggplot(data, aes(x=Year,fill = Name)) + 
+    geom_bar()
+
+ggplot(data, aes(x=Year,fill = Country)) + 
+    geom_bar()
+
+ggplot(data, aes(x=Year,fill = Type)) + 
+    geom_bar()
+```
+==> ridgeline
+
+```{r}
+library(ggridges)
+library(ggplot2)
+library(viridis)
+library(hrbrthemes)
+```
+
+```{r}
+dataquanti[is.na(dataquanti)] <- 0
+cor(dataquanti)
+ggcorr(dataquanti)
+```
+
+```{r}
+cormat <- round(cor(dataquanti),2)
+head(cormat)
+library(reshape2)
+melted_cormat <- melt(cormat)
+head(melted_cormat)
+library(ggplot2)
+ggplot(data = melted_cormat, aes(x=Var1, y=Var2, fill=value)) + 
+  geom_tile()
+```
 
