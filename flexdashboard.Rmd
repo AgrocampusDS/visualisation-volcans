@@ -34,7 +34,30 @@ library(tidyverse)
 library(ggplot2)
 library(reshape2)
 library(plotly)
+library(rnaturalearth)
+library(cowplot)
+library(readr)
 ```
+
+```{r}
+data <- read_delim("volcano.csv",
+                   delim = ";", 
+                   escape_double = FALSE,
+                   trim_ws = TRUE)
+#summary(data)
+dataquanti <- data[,c(1,7:9,13,15:19)]
+
+volcano <- read_delim("volcano.csv",
+                      delim = ";", 
+                      escape_double = FALSE,
+                      trim_ws = TRUE)
+#names(volcano)
+volcano$Year <- as.factor(volcano$Year)
+volcano$Name <- as.factor(volcano$Name)
+volcano$Location <- as.factor(volcano$Location)
+volcano$Country <- as.factor(volcano$Country)
+```
+
 
 Présentation
 =======================================================================
@@ -65,18 +88,41 @@ maxmin <- data.frame("Afrique du Nord" = c(35,0), "Afrique subsaharienne" = c(35
 rownames(maxmin) <- c("Max", "Min")
 freqradar <- rbind(maxmin, freq)
 radarchart(freqradar,maxmin = TRUE, #custom polygon
-    pcol=rgb(1,0.140,0,0.9) , pfcol=rgb(1,0.140,0,0.5) , plwd=4 , plty=1,
- 
-    #custom the grid
-    cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,35,7), cglwd=1, title = "Nombre d'éruptions par continents de 2010 à 2018",
- 
-    #custom labels
-    vlcex=0.9 )
+           pcol=rgb(1,0.140,0,0.9) , pfcol=rgb(1,0.140,0,0.5) , plwd=4 , plty=1,
+           
+           #custom the grid
+           cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,35,7), cglwd=1, title = "Nombre d'éruptions par continents de 2010 à 2018",
+           
+           #custom labels
+           vlcex=0.9 )
 ```
 
 ### Graphique 2
 
+```{r}
+try <- map_data('world')
 
+ggplot() +
+  geom_polygon(data = try,
+               aes(x = long, y = lat, group = group),
+               fill = 'grey') +
+  geom_point(data = volcano %>% arrange(TOTAL_COST),
+             aes(x = Longitude,
+                 y = Latitude,
+                 color = DAMAGE_MILLIONS_DOLLARS,
+                 size = TOTAL_LIFE_COST),
+             alpha = 0.8) +
+  scale_color_gradientn(colors = c('#FF6600',
+                                   '#330000'),
+                        name = 'Coût en terme de vie') +
+  scale_size(name = 'Coûts des dégats matériels') +
+  coord_map('mercator',
+            xlim = c(-180,180)) +
+  theme_map() +
+  theme(legend.position = 'bottom') +
+  labs(title = 'Coût des eruptions dans le monde',
+       subtitle = 'Coûts matériels et humains')
+```
 
 ### Graphique 3
 
