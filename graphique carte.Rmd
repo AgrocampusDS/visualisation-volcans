@@ -26,7 +26,9 @@ summary(volcano)
 
 
 ```{r}
-world <- ne_countries(scale = "medium", returnclass = "sf")
+world <- ne_countries(scale = "medium",
+                      returnclass = "sf",
+                      type = 'countries')
 world %>% 
   ggplot() + 
   geom_sf()
@@ -39,7 +41,8 @@ library(rnaturalearth)
 library(ggplot2)
 library(tidyverse)
 
-world <- ne_countries(scale = "medium", returnclass = "sf")
+world <- ne_countries(scale = "medium",
+                      returnclass = "sf")
 world %>% 
   ggplot() + 
   geom_sf() +
@@ -53,6 +56,55 @@ world %>%
              alpha = 0.8)
 
 ```
+
+
+```{r}
+library(cowplot)
+
+try <- map_data('world')
+
+ggplot() +
+  geom_polygon(data = try,
+               aes(x = long, y = lat, group = group),
+               fill = 'grey') +
+  geom_point(data = volcano %>% arrange(TOTAL_COST),
+             aes(x = Longitude,
+                 y = Latitude,
+                 color = DAMAGE_MILLIONS_DOLLARS,
+                 size = TOTAL_LIFE_COST),
+             alpha = 0.8) +
+  scale_color_gradientn(colors = c('#FF6600',
+                                   '#330000'),
+                        name = 'Coût en terme de vie') +
+  scale_size(name = 'Coûts des dégats matériels') +
+  coord_map('mercator',
+            xlim = c(-180,180)) +
+  theme_map() +
+  theme(legend.position = 'bottom') +
+  labs(title = 'Coût des eruptions dans le monde',
+               subtitle = 'Coûts matériels et humains')
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
