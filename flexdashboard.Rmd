@@ -5,10 +5,10 @@ output:
   flexdashboard::flex_dashboard:
     theme:
       version: 4
-      bg: "white"
-      fg: "#FF6633" 
-      primary: "#ED79F9"
-      navbar-bg: "darkorange"
+      bg: "#FFFFCC" # couleur du texte des onglets
+      fg: "#330000" # couleur du texte dans les cadres
+      primary: "green"
+      navbar-bg: "darkorange" # couleur de la banière du haut
     orientation: columns
     vertical_layout: fill
 params:
@@ -17,8 +17,8 @@ params:
 
 <style>                     
 .navbar {
-background-color:#46ACC8;
-border-color:#46ACC8;
+background-color:#FFFFCC;
+border-color:#FFFFCC;
 }
 .navbar-brand {
 color:black!important;
@@ -57,13 +57,13 @@ data$Country <- as.factor(data$Country)
 ```
 
 
-Présentation
+Présentation générale
 =======================================================================
 
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Présentation des donées
+### Présentation de la problématique
 
 Oui bonjour c'est nous les employés de chez "Goodenough Assurance" j'espère que vous allez bien.
 
@@ -71,17 +71,15 @@ Oui bonjour c'est nous les employés de chez "Goodenough Assurance" j'espère qu
 
 Nos données c'est sur les volcans et on cherche à assurer nos clients en cas de sinistre parce que franchement se faire ravager la maison par de la lave c'est pas fun.
 
-Graphiques
+Graphique 1
 =======================================================================
 
-
-### Graphique 1
 
 ```{r}
 freq <- as.data.frame(table(data$Continent))
 freq <- pivot_wider(data = freq,names_from = Var1, values_from = Freq)
 freq <- freq[1,]
-colnames(freq)
+#colnames(freq)
 maxmin <- data.frame("Afrique du Nord" = c(35,0), "Afrique subsaharienne" = c(35,0), "Amerique du Nord" = c(35,0), "Amerique latine" = c(35,0), "Asie de l'Est" = c(35,0), "Asie du Sud" = c(35,0), "Europe" = c(35,0),check.names=FALSE)
 rownames(maxmin) <- c("Max", "Min")
 freqradar <- rbind(maxmin, freq)
@@ -95,7 +93,8 @@ radarchart(freqradar,maxmin = TRUE, #custom polygon
            vlcex=0.9 )
 ```
 
-### Graphique 2
+Graphique 2
+=======================================================================
 
 ```{r}
 try <- map_data('world')
@@ -112,16 +111,21 @@ ggplot() +
              alpha = 0.8) +
   scale_color_gradientn(colors = c('#FF6600',
                                    '#330000'),
-                        name = 'Coût en terme de vie') +
+                        name = 'Coûts humain',
+                        n.breaks = 4) +
   scale_size(name = 'Coûts des dégats matériels') +
   coord_map('mercator',
-            xlim = c(-180,180)) +
+            xlim = c(-180,180),
+            ylim = c(-50,70)) +
   theme_map() +
-  theme(legend.position = 'bottom') +
-  labs(title = 'Coût des eruptions dans le monde',
-       subtitle = 'Coûts matériels et humains')
+  theme(legend.position = 'bottom',
+        legend.box = 'vertical') +
+  labs(title = 'Coût des éruptions dans le monde',
+       subtitle = 'Coûts matériels et humains') +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 ```
 
-### Graphique 3
+
 
 
