@@ -17,8 +17,8 @@ params:
 
 <style>                     
 .navbar {
-  background-color:#46ACC8;
-  border-color:#46ACC8;
+background-color:#46ACC8;
+border-color:#46ACC8;
 }
 .navbar-brand {
 color:black!important;
@@ -37,6 +37,8 @@ library(plotly)
 library(rnaturalearth)
 library(cowplot)
 library(readr)
+library(fmsb)
+library(mapproj)
 ```
 
 ```{r}
@@ -80,7 +82,7 @@ freq <- as.data.frame(table(data$Continent))
 freq <- pivot_wider(data = freq,names_from = Var1, values_from = Freq)
 freq <- freq[1,]
 colnames(freq)
-maxmin <- data.frame("Afrique du Nord" = c(35,0), "Afrique subsaharienne" = c(35,0), "Amérique du Nord" = c(35,0), "Amérique latine" = c(35,0), "Asie de l’Est" = c(35,0), "Asie du Sud" = c(35,0), "Europe" = c(35,0),check.names=FALSE)
+maxmin <- data.frame("Afrique du Nord" = c(35,0), "Afrique subsaharienne" = c(35,0), "Amerique du Nord" = c(35,0), "Amerique latine" = c(35,0), "Asie de l'Est" = c(35,0), "Asie du Sud" = c(35,0), "Europe" = c(35,0),check.names=FALSE)
 rownames(maxmin) <- c("Max", "Min")
 freqradar <- rbind(maxmin, freq)
 radarchart(freqradar,maxmin = TRUE, #custom polygon
