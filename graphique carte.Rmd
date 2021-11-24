@@ -47,16 +47,10 @@ world <- ne_countries(scale = "medium", returnclass = "sf")
 world %>% 
   ggplot() + 
   geom_sf() +
-  geom_polygon(data = volcano,
-               aes(x = Longitude,
-                   y = Latitude,
-                   group = Location),
-               fill = "grey",
-               alpha = 0.3) +
   geom_point(data = volcano,
              aes(x = Longitude,
                  y = Latitude,
-                 size = (TOTAL_COST_MD*1000),
+                 size = TOTAL_COST_MD,
                  color = Type,
                  text = Name),
              alpha = 0.8)
