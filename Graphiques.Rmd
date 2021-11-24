@@ -57,6 +57,31 @@ radarchart(freqradar,maxmin = TRUE, #custom polygon
 ==> next étape : focus sur l'asie du sud 
 
 ```{r}
+data_asie[is.na(data_asie)] <- 0
+data_asie <- data[data$Continent=="Asie du Sud",]
+
+ggplot(data_asie, aes(x=Country)) + 
+    geom_bar()
+
+ggplot(data_asie, aes(x=Year, y=DEATHS, color=Country)) + 
+    geom_point(size=6) +
+    theme_ipsum()
+
+
+ggplot(data_asie, aes(x = Year, y = Country, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "Temp. [F]", option = "C") +
+  labs(title = 'Temperatures in Lincoln NE in 2016') +
+  theme_ipsum() +
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+```
+
+
+```{r}
 library(ggridges)
 library(ggplot2)
 library(viridis)
