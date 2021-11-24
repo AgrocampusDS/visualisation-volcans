@@ -1,15 +1,11 @@
 ---
-title: "Un joli titre pour le dashboard"
-author: "Marie-Pierre Etienne"
+title: "Volcans"
+author: "Agathe & Romane"
 output: 
   flexdashboard::flex_dashboard:
     theme: bootstrap
     orientation: columns
     vertical_layout: fill
-    navbar:
-      - { title: "Moodle", href: "https://tice.agrocampus-ouest.fr/course/view.php?id=6726", align: left }
-      - { icon: "fa-twitter", href: "https://twitter.com/marie_etienne", align: right }
-      - { icon: "fa-linkedin", href: "https://www.linkedin.com/in/marie-etienne-818a7115/", align: right }
 params:
   setup_path: ../resources/
 ---
@@ -34,48 +30,32 @@ library(ggplot2)
 library(plotly)
 ```
 
+Présentation
+=======================================================================
+
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### An easy solution for dashboard
-
-```{r, echo = TRUE}
-#install.package('flexdasboard')
-#rmarkdown::draft("dashboard.Rmd", template = "flex_dashboard", package = "flexdashboard")
-```
-
-The [flexdashboard website](https://rmarkdown.rstudio.com/flexdashboard/index.html) provides multiple advanced examples.
-
-### Some static graph
-
-```{r data, eval = TRUE, echo = FALSE, results='hide', message = FALSE, warning=FALSE}
-n <- 100
-data <- read.csv("volcano.csv",sep = ";")
-
-```
-
-
-```{r graph_static,  echo = FALSE,  message = FALSE, warning=FALSE}
-p1 <- ggplot(data, aes(x=Year,fill = Country)) + 
-    geom_bar()
-p1
-```
-
-Column {.tabset .tabset-fade}
------------------------------------------------------------------------
-
-
-### Some dynamic maps
-
-```{r  ggplotly, echo = TRUE,  eval = TRUE,  message = FALSE, warning=FALSE}
-#plotly::ggplotly(p1)
-```
+### Présentation des donées
 
 
 
-### Chart C
+### Présentation des données
 
-```{r}
 
-```
+
+Graphiques
+=======================================================================
+
+
+### Graphique 1
+
+
+
+### Graphique 2
+
+
+
+### Graphique 3
+
 
