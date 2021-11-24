@@ -21,11 +21,7 @@ volcano$Name <- as.factor(volcano$Name)
 volcano$Location <- as.factor(volcano$Location)
 volcano$Country <- as.factor(volcano$Country)
 
-#summary(volcano)
-
-volcano <- cbind(volcano, 'LIFE_MILLIONS_DOLLAR' = 3.38*(volcano$DEATHS))
-volcano <- cbind(volcano, 'TOTAL_COST_MD' = volcano$DAMAGE_MILLIONS_DOLLARS + volcano$LIFE_MILLIONS_DOLLAR)
-volcano <- cbind(volcano, 'sTOTAL_COST' = (volcano$LIFE_MILLIONS_DOLLAR)/1000)
+summary(volcano)
 ```
 
 
@@ -50,9 +46,10 @@ world %>%
   geom_point(data = volcano,
              aes(x = Longitude,
                  y = Latitude,
-                 size = TOTAL_COST_MD,
-                 color = Type,
+                 size = TOTAL_COST,
+                 color = TOTAL_COST,
                  text = Name),
+             show.legend = FALSE,
              alpha = 0.8)
 
 ```
