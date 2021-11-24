@@ -3,7 +3,12 @@ title: "Volcans"
 author: "Agathe & Romane"
 output: 
   flexdashboard::flex_dashboard:
-    theme: bootstrap
+    theme:
+      version: 4
+      bg: "white"
+      fg: "#FF6633" 
+      primary: "#ED79F9"
+      navbar-bg: "darkorange"
     orientation: columns
     vertical_layout: fill
 params:
@@ -27,6 +32,7 @@ color:black!important;
 library(flexdashboard)
 library(tidyverse)
 library(ggplot2)
+library(reshape2)
 library(plotly)
 ```
 
@@ -38,11 +44,11 @@ Column {data-width=650}
 
 ### Présentation des donées
 
-
+Oui bonjour c'est nous les employés de chez "Goodenough Assurance" j'espère que vous allez bien.
 
 ### Présentation des données
 
-
+Nos données c'est sur les volcans et on cherche à assurer nos clients en cas de sinistre parce que franchement se faire ravager la maison par de la lave c'est pas fun.
 
 Graphiques
 =======================================================================
@@ -50,7 +56,23 @@ Graphiques
 
 ### Graphique 1
 
-
+```{r}
+freq <- as.data.frame(table(data$Continent))
+freq <- pivot_wider(data = freq,names_from = Var1, values_from = Freq)
+freq <- freq[1,]
+colnames(freq)
+maxmin <- data.frame("Afrique du Nord" = c(35,0), "Afrique subsaharienne" = c(35,0), "Amérique du Nord" = c(35,0), "Amérique latine" = c(35,0), "Asie de l’Est" = c(35,0), "Asie du Sud" = c(35,0), "Europe" = c(35,0),check.names=FALSE)
+rownames(maxmin) <- c("Max", "Min")
+freqradar <- rbind(maxmin, freq)
+radarchart(freqradar,maxmin = TRUE, #custom polygon
+    pcol=rgb(1,0.140,0,0.9) , pfcol=rgb(1,0.140,0,0.5) , plwd=4 , plty=1,
+ 
+    #custom the grid
+    cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,35,7), cglwd=1, title = "Nombre d'éruptions par continents de 2010 à 2018",
+ 
+    #custom labels
+    vlcex=0.9 )
+```
 
 ### Graphique 2
 
