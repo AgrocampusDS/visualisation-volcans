@@ -39,6 +39,7 @@ library(cowplot)
 library(readr)
 library(fmsb)
 library(mapproj)
+library(knitr)
 ```
 
 ```{r}
@@ -60,16 +61,23 @@ data$Country <- as.factor(data$Country)
 Présentation générale
 =======================================================================
 
-Column {data-width=650}
------------------------------------------------------------------------
-
 ### Présentation de la problématique
 
-Oui bonjour c'est nous les employés de chez "Goodenough Assurance" j'espère que vous allez bien.
+Bienvenue chez Goodenough Insurance, spécialistes en vente d'assurance sinistre & catastrophes naturelles.
+
+Notre entreprise prospère depuis un bon nombre d'année comme vous le savez et souhaitons depuis peu élargir nos actions à des sinistres de plus grande ampleur. Après moultes réflexions et discussion avec nos experts sur le terrain nous avons finalement choisit de nous concentrer sur les sinistres causés par les erutpions volcaniques.
 
 ### Présentation des données
 
-Nos données c'est sur les volcans et on cherche à assurer nos clients en cas de sinistre parce que franchement se faire ravager la maison par de la lave c'est pas fun.
+Dans le but de nous renseigner sur ce sujet brulant et d'établir un plan d'attaque (zone d'interêt, hauteur du montant des dégats, etc.), nous avons utilisé les données suivantes :
+
+Le jeu de donnée compile, sur les 10 dernières années, les activités de plus de 15 volcans différents ainsi que les données chiffrées associées qui nous intéressent dont principalement :
+
+ - coûts des dégats matériaux
+ - nombre de décès, disparus et bléssés
+ 
+En plus de ces données, nous avons également ajoutés un équivalent "coûts des dégats humain" afin d'estimer le prix de nos assurances vie.
+
 
 Graphique 1
 =======================================================================
@@ -83,7 +91,9 @@ freq <- freq[1,]
 maxmin <- data.frame("Afrique du Nord" = c(35,0), "Afrique subsaharienne" = c(35,0), "Amerique du Nord" = c(35,0), "Amerique latine" = c(35,0), "Asie de l'Est" = c(35,0), "Asie du Sud" = c(35,0), "Europe" = c(35,0),check.names=FALSE)
 rownames(maxmin) <- c("Max", "Min")
 freqradar <- rbind(maxmin, freq)
-radarchart(freqradar,maxmin = TRUE, #custom polygon
+radarchart(freqradar,
+           axistype = 1,
+           maxmin = TRUE, #custom polygon
            pcol=rgb(1,0.140,0,0.9) , pfcol=rgb(1,0.140,0,0.5) , plwd=4 , plty=1,
            
            #custom the grid
@@ -126,6 +136,30 @@ ggplot() +
         plot.subtitle = element_text(hjust = 0.5))
 ```
 
+Graphique 2
+=======================================================================
+
+```{r}
+data_asie <- data[data$Continent=="Asie du Sud",]
+#data_asie[is.na(data_asie)] <- 0
+
+prct <- as.data.frame(table(data_asie$Country))
+
+prct$fraction = prct$Freq / sum(prct$Freq)
+prct$ymax = cumsum(prct$fraction)
+prct$ymin = c(0, head(prct$ymax, n=-1))
+prct$labelPosition <- (prct$ymax + prct$ymin) / 2
+prct$label <- paste0(prct$Var1, "\n value: ", prct$Freq)
 
 
+ggplot(prct, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=Var1)) +
+  geom_rect() +
+  geom_label( x=3.5, aes(y=labelPosition, label=label), size=4) +
+  scale_fill_brewer(palette=8) +
+  coord_polar(theta="y") + # Try to remove that to understand how the chart is built initially
+  xlim(c(2, 4)) +
+  theme_void() +
+  theme(legend.position = "none")+
+  labs(title = "Répartitions du nombre total d'éruptions en Asie du Sud", subtitle = "de 2010 à 2018")
+```
 
