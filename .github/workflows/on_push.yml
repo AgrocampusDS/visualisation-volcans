@@ -8,7 +8,7 @@ jobs:
   build:
     name: Build website with rmarkdown
     runs-on: ubuntu-latest
-    container: mpetienne/r-dataviz_template:0.5
+    container: mpetienne/r-dataviz_template:0.6
 
     steps:
       - name: Checkout repository
