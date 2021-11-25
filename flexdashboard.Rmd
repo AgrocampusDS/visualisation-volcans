@@ -144,6 +144,7 @@ data_asie <- data[data$Continent=="Asie du Sud",]
 #data_asie[is.na(data_asie)] <- 0
 
 prct <- as.data.frame(table(data_asie$Country))
+prct <- prct[prct$Freq !=0, ]
 
 prct$fraction = prct$Freq / sum(prct$Freq)
 prct$ymax = cumsum(prct$fraction)
@@ -154,12 +155,12 @@ prct$label <- paste0(prct$Var1, "\n value: ", prct$Freq)
 
 ggplot(prct, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=Var1)) +
   geom_rect() +
-  geom_label( x=3.5, aes(y=labelPosition, label=label), size=4) +
+  geom_label(x=3.5, aes(y=labelPosition, label=label), size=4) +
   scale_fill_brewer(palette=8) +
   coord_polar(theta="y") + # Try to remove that to understand how the chart is built initially
   xlim(c(2, 4)) +
   theme_void() +
   theme(legend.position = "none")+
-  labs(title = "Répartitions du nombre total d'éruptions en Asie du Sud", subtitle = "de 2010 à 2018")
+  labs(title = "Répartitions du nombre total d'éruptions en Asie du Sud", subtitle = " de 2010 à 2018")
 ```
 
