@@ -19,65 +19,64 @@ dataquanti <- data[,c(1,7:9,13,15:19)]
 
 ```{r}
 library(ggplot2)
-value <- as.data.frame(table(data$Name))
-# Stacked
-ggplot(data, aes(x=Year)) + 
-    geom_bar()
-
-ggplot(data, aes(x=Year,fill = Name)) + 
-    geom_bar()
-
-ggplot(data, aes(x=Year,fill = Continent)) + 
-    geom_bar()
-
-ggplot(data, aes(x=Year,fill = Type)) + 
-    geom_bar()
+# value <- as.data.frame(table(data$Name))
+# # Stacked
+# ggplot(data, aes(x=Year)) + 
+#   geom_bar()
+# 
+# ggplot(data, aes(x=Year,fill = Name)) + 
+#   geom_bar()
+# 
+# ggplot(data, aes(x=Year,fill = Continent)) + 
+#   geom_bar()
+# 
+# ggplot(data, aes(x=Year,fill = Type)) + 
+#   geom_bar()
 ```
 ==> par continent 
 
 ```{r}
-library(reshape2)
 freq <- as.data.frame(table(data$Continent))
 freq <- pivot_wider(data = freq,names_from = Var1, values_from = Freq)
 freq <- freq[1,]
 colnames(freq)
-maxmin <- data.frame("Afrique du Nord" = c(35,0), "Afrique subsaharienne" = c(35,0), "Amérique du Nord" = c(35,0), "Amérique latine" = c(35,0), "Asie de l’Est" = c(35,0), "Asie du Sud" = c(35,0), "Europe" = c(35,0),check.names=FALSE)
+
+maxmin <- data.frame("Afrique du Nord" = c(35,0), "Afrique subsaharienne" = c(35,0), "Amerique du Nord" = c(35,0), "Amerique latine" = c(35,0), "Asie de l'Est" = c(35,0), "Asie du Sud" = c(35,0), "Europe" = c(35,0),check.names=FALSE)
 rownames(maxmin) <- c("Max", "Min")
 freqradar <- rbind(maxmin, freq)
-radarchart(freqradar,maxmin = TRUE, #custom polygon
-    pcol=rgb(1,0.140,0,0.9) , pfcol=rgb(1,0.140,0,0.5) , plwd=4 , plty=1,
- 
-    #custom the grid
-    cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,35,7), cglwd=1, title = "Nombre d'éruptions par continents de 2010 à 2018",
- 
-    #custom labels
-    vlcex=0.9 )
+radarchart(freqradar,axistype = 1,maxmin = TRUE, #custom polygon
+           pcol=rgb(1,0.140,0,0.9) , pfcol=rgb(1,0.140,0,0.5) , plwd=4 , plty=1,
+           
+           #custom the grid
+           cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,35,7), cglwd=1, title = "Nombre d'éruptions par continents de 2010 à 2018",
+           
+           #custom labels
+           vlcex=0.9 )
 ```
 
-==> next étape : focus sur l'asie du sud 
 
 ```{r}
-data_asie <- data[data$Continent=="Asie du Sud",]
-#data_asie[is.na(data_asie)] <- 0
-
-ggplot(data_asie, aes(x=Country)) + 
-    geom_bar()
-
-ggplot(data_asie, aes(x=Year, y=DEATHS, color=Country)) + 
-    geom_point(size=6) +
-    theme_ipsum()
-
-
-ggplot(data_asie, aes(x = Year, y = Country, fill = ..x..)) +
-  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
-  scale_fill_viridis(name = "Temp. [F]", option = "C") +
-  labs(title = 'Temperatures in Lincoln NE in 2016') +
-  theme_ipsum() +
-    theme(
-      legend.position="none",
-      panel.spacing = unit(0.1, "lines"),
-      strip.text.x = element_text(size = 8)
-    )
+# data_asie <- data[data$Continent=="Asie du Sud",]
+# #data_asie[is.na(data_asie)] <- 0
+# 
+# ggplot(data_asie, aes(x=Country)) + 
+#   geom_bar()
+# 
+# ggplot(data_asie, aes(x=Year, y=DEATHS, color=Country)) + 
+#   geom_point(size=6) +
+#   theme_ipsum()
+# 
+# 
+# ggplot(data_asie, aes(x = Year, y = Country, fill = ..x..)) +
+#   geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+#   scale_fill_viridis(name = "Temp. [F]", option = "C") +
+#   labs(title = 'Temperatures in Lincoln NE in 2016') +
+#   theme_ipsum() +
+#   theme(
+#     legend.position="none",
+#     panel.spacing = unit(0.1, "lines"),
+#     strip.text.x = element_text(size = 8)
+#   )
 
 ```
 ```{r}
@@ -86,10 +85,19 @@ prct <- as.data.frame(table(data_asie$Country))
 prct$fraction = prct$Freq / sum(prct$Freq)
 prct$ymax = cumsum(prct$fraction)
 prct$ymin = c(0, head(prct$ymax, n=-1))
+prct$labelPosition <- (prct$ymax + prct$ymin) / 2
+prct$label <- paste0(prct$Var1, "\n value: ", prct$Freq)
+
+
 ggplot(prct, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=Var1)) +
-     geom_rect() +
-     coord_polar(theta="y") + # Try to remove that to understand how the chart is built initially
-     xlim(c(2, 4))
+  geom_rect() +
+  geom_label( x=3.5, aes(y=labelPosition, label=label), size=4) +
+  scale_fill_brewer(palette=8) +
+  coord_polar(theta="y") + # Try to remove that to understand how the chart is built initially
+  xlim(c(2, 4)) +
+  theme_void() +
+  theme(legend.position = "none")+
+  labs(title = "Répartitions du nombre total d'éruptions en Asie du Sud", subtitle = "de 2010 à 2018")
 ```
 
 
