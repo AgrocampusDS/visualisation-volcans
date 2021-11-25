@@ -131,7 +131,7 @@ ggplot() +
   theme(legend.position = 'bottom',
         legend.box = 'vertical') +
   labs(title = 'Coût des éruptions dans le monde',
-       subtitle = 'Coûts matériels et humains') +
+       subtitle = 'Coûts matériels et humains en millions de dollars') +
   theme(plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5))
 ```
